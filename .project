@@ -14,11 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>src/conversation/com</name>
-			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/%E6%AD%A3learn2013s/%E9%A9%AC%E5%A3%AB%E5%85%B5java%E6%95%99%E5%AD%A6%E8%A7%86%E9%A2%91/%E5%B0%9A%E5%AD%A6%E5%A0%82%E7%A7%91%E6%8A%80_%E9%A9%AC%E5%A3%AB%E5%85%B5_%E5%9D%A6%E5%85%8B%E5%A4%A7%E6%88%98%E8%A7%86%E9%A2%91%E6%95%99%E7%A8%8B_java_eclipse/TankWar_Video_Course/source/TankWar2.6/src/com</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>

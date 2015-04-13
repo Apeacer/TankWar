@@ -1,62 +1,88 @@
-package conversation;
-import java.io.*;
-import java.net.*;
+package tank_war_2_online2_unfinished;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.BindException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.*;
 
-public class ChatServer {
+//ServerSocket------------------------------------------------------------------------------------------------------
+class TankServer {
 	boolean started = false;
-	ServerSocket ss = null;
+	ServerSocket ser = null;
 	
-	List<Client> clients = new ArrayList<Client>();
+	Vector<Client> clients = new Vector<Client>();
 	
+	Vector<String> strs=new Vector<String>();
+	
+	int id=2;
+	
+	//主运行方法。。。。。。。。。。
 	public static void main(String[] args) {
-		new ChatServer().start();
+		new TankServer().start();
 	}
 	
+	//连接方法。。。。。。。。。。
 	public void start() {
 		try {
-			ss = new ServerSocket(8888);
+			ser = new ServerSocket(6008);
 			started = true;
 		} catch (BindException e) {
-			System.out.println("端口使用中....");
-			System.out.println("请关掉相关程序并重新运行服务器！");
+			System.out.println("端口被抢先了，早点来吧~");
 			System.exit(0);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
+		//不停地链接客户端
 		try {
 			
 			while(started) {
-				Socket s = ss.accept();
+				
+				Socket s = ser.accept();
 				Client c = new Client(s);
-                System.out.println("a client connected!");
+				
+				c.dos.writeInt(id);
+
 				new Thread(c).start();
 				clients.add(c);
+				
+				id++;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				ss.close();
+				ser.close();
 			} catch (IOException e) {
-		
+	
 				e.printStackTrace();
 			}
 		}
 	}
 	
+	//将客户端视为对象，对其进行链接
 	class Client implements Runnable {
 		private Socket s;
+		
 		private DataInputStream dis = null;
 		private DataOutputStream dos = null;
 		private boolean bConnected = false;
 		
 		public Client(Socket s) {
+			
+			
 			this.s = s;
 			try {
-				dis = new DataInputStream(s.getInputStream());
-				dos = new DataOutputStream(s.getOutputStream());
+				
+				dis=new DataInputStream(s.getInputStream());
+				dos=new DataOutputStream(s.getOutputStream());
+				
 				bConnected = true;
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -68,22 +94,22 @@ public class ChatServer {
 				dos.writeUTF(str);
 			} catch (IOException e) {
 				clients.remove(this);
-				System.out.println("对方退出了！我从List里面去掉了！");
-		
+				System.out.println("人家讨厌你了，下线了~");
 			}
 		}
 		
 		public void run() {
 			try {
 				while(bConnected) {
-					String str = dis.readUTF();
-                    System.out.println(str);
+						
+						String str = dis.readUTF();
+
+					
 					for(int i=0; i<clients.size(); i++) {
 						Client c = clients.get(i);
-						c.send(str);
 
+						    c.send(str);
 					}
-					
 				}
 			} catch (EOFException e) {
 				System.out.println("Client closed!");
@@ -95,7 +121,6 @@ public class ChatServer {
 					if(dos != null) dos.close();
 					if(s != null)  {
 						s.close();
-	
 					}
 					
 				} catch (IOException e1) {
